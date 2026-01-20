@@ -507,6 +507,97 @@
     .cart-item {
       animation: slideIn 0.3s ease-out;
     }
+
+    /* Customer Info Form */
+    .customer-form {
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: all 0.3s;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .form-group input.error {
+      border-color: var(--danger);
+    }
+
+    .error-message {
+      color: var(--danger);
+      font-size: 0.875rem;
+      margin-top: 0.25rem;
+      display: none;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .btn-secondary {
+      background: var(--text-light);
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 600;
+      flex: 1;
+      transition: all 0.3s;
+    }
+
+    .btn-secondary:hover {
+      background: #475569;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 600;
+      flex: 1;
+      transition: all 0.3s;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    }
+
+    .btn-primary:disabled {
+      background: var(--text-light);
+      cursor: not-allowed;
+      transform: none;
+    }
   </style>
 </head>
 <body>
@@ -515,6 +606,8 @@
     <div class="container">
       <div class="header-content">
         <div class="logo">
+          <span class="logo-icon">🎓</span>
+          <span>Kids O'Day</span>
         </div>
         <button class="cart-btn" onclick="openCart()">
           🛒 Cart
@@ -523,6 +616,14 @@
       </div>
     </div>
   </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <h1>Empowering Young Minds Through Learning</h1>
+      <p>Quality educational resources and courses for children</p>
+    </div>
+  </section>
 
   <!-- Products Section -->
   <section class="products-section">
@@ -551,7 +652,7 @@
               <span>Total:</span>
               <span id="cartTotal">$0.00</span>
             </div>
-            <button class="checkout-btn" onclick="checkout()">
+            <button class="checkout-btn" onclick="showCustomerForm()">
               Proceed to Checkout
             </button>
           </div>
@@ -560,9 +661,68 @@
     </div>
   </div>
 
+  <!-- Customer Info Modal -->
+  <div class="modal" id="customerModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Customer Information</h2>
+        <button class="close-btn" onclick="closeCustomerForm()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form class="customer-form" id="customerForm" onsubmit="handleCustomerSubmit(event)">
+          <div class="form-group">
+            <label for="customerEmail">Email Address *</label>
+            <input 
+              type="email" 
+              id="customerEmail" 
+              name="email" 
+              required 
+              placeholder="your.email@example.com"
+            />
+            <span class="error-message" id="emailError">Please enter a valid email address</span>
+          </div>
+
+          <div class="form-group">
+            <label for="customerName">Full Name *</label>
+            <input 
+              type="text" 
+              id="customerName" 
+              name="name" 
+              required 
+              placeholder="John Doe"
+            />
+            <span class="error-message" id="nameError">Please enter your full name</span>
+          </div>
+
+          <div class="form-group">
+            <label for="customerPhone">Phone Number *</label>
+            <input 
+              type="tel" 
+              id="customerPhone" 
+              name="phone" 
+              required 
+              placeholder="+1234567890"
+            />
+            <span class="error-message" id="phoneError">Please enter a valid phone number</span>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn-secondary" onclick="closeCustomerForm()">
+              Back to Cart
+            </button>
+            <button type="submit" class="btn-primary">
+              Continue to Payment
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
   <!-- Footer -->
   <footer>
     <div class="container">
+      <p>&copy; 2024 Kids O'Day. All rights reserved.</p>
       <p>Empowering young minds, one lesson at a time 🌟</p>
     </div>
   </footer>
@@ -764,22 +924,103 @@
       renderCart();
     }
 
-    // Checkout with Flutterwave
-    function checkout() {
+    // Show customer information form
+    function showCustomerForm() {
+      if (cart.length === 0) return;
+      
+      // Close cart modal
+      document.getElementById('cartModal').classList.remove('active');
+      
+      // Open customer form modal
+      document.getElementById('customerModal').classList.add('active');
+      
+      // Clear any previous form data
+      document.getElementById('customerForm').reset();
+      clearFormErrors();
+    }
+
+    // Close customer form
+    function closeCustomerForm() {
+      document.getElementById('customerModal').classList.remove('active');
+      // Reopen cart
+      document.getElementById('cartModal').classList.add('active');
+    }
+
+    // Clear form errors
+    function clearFormErrors() {
+      const inputs = document.querySelectorAll('#customerForm input');
+      inputs.forEach(input => {
+        input.classList.remove('error');
+      });
+      
+      const errors = document.querySelectorAll('.error-message');
+      errors.forEach(error => {
+        error.style.display = 'none';
+      });
+    }
+
+    // Validate email
+    function validateEmail(email) {
+      const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return re.test(email);
+    }
+
+    // Validate phone
+    function validatePhone(phone) {
+      // Basic validation - at least 10 digits
+      const cleaned = phone.replace(/\D/g, '');
+      return cleaned.length >= 10;
+    }
+
+    // Handle customer form submission
+    function handleCustomerSubmit(event) {
+      event.preventDefault();
+      
+      clearFormErrors();
+      
+      const email = document.getElementById('customerEmail').value.trim();
+      const name = document.getElementById('customerName').value.trim();
+      const phone = document.getElementById('customerPhone').value.trim();
+      
+      let isValid = true;
+      
+      // Validate email
+      if (!validateEmail(email)) {
+        document.getElementById('customerEmail').classList.add('error');
+        document.getElementById('emailError').style.display = 'block';
+        isValid = false;
+      }
+      
+      // Validate name
+      if (name.length < 2) {
+        document.getElementById('customerName').classList.add('error');
+        document.getElementById('nameError').style.display = 'block';
+        isValid = false;
+      }
+      
+      // Validate phone
+      if (!validatePhone(phone)) {
+        document.getElementById('customerPhone').classList.add('error');
+        document.getElementById('phoneError').style.display = 'block';
+        isValid = false;
+      }
+      
+      if (!isValid) {
+        return false;
+      }
+      
+      // Proceed to payment
+      processCheckout(email, name, phone);
+      
+      return false;
+    }
+
+    // Process checkout with Flutterwave
+    function processCheckout(customerEmail, customerName, customerPhone) {
       if (cart.length === 0) return;
 
       const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
       
-      // Get customer info (you can add a form for this)
-      const customerEmail = prompt("Please enter your email address:");
-      if (!customerEmail) return;
-
-      const customerName = prompt("Please enter your full name:");
-      if (!customerName) return;
-
-      const customerPhone = prompt("Please enter your phone number:");
-      if (!customerPhone) return;
-
       // Prepare order data
       const orderData = {
         items: cart,
@@ -791,6 +1032,9 @@
         },
         timestamp: new Date().toISOString()
       };
+
+      // Close customer modal
+      document.getElementById('customerModal').classList.remove('active');
 
       // Initialize Flutterwave
       FlutterwaveCheckout({
@@ -814,8 +1058,7 @@
         customizations: {
           title: "Kids O'Day",
           description: "Purchase of Educational Resources",
-          logo: "https://logo.kidsoday.com/Kids%20O'Day.png"
-
+          logo: "https://www.kidsoday.com/logo.png"
         },
         callback: function(data) {
           console.log("Payment successful:", data);
@@ -829,15 +1072,22 @@
           
           // Show success message
           alert("Thank you for your purchase! Your order has been confirmed.");
-          closeCart();
           
-          // Redirect to success page (optional)
-          // window.location.href = "/success.html";
+          // Close all modals
+          document.getElementById('customerModal').classList.remove('active');
+          document.getElementById('cartModal').classList.remove('active');
         },
         onclose: function() {
           console.log("Payment modal closed");
+          // Reopen customer form if payment was cancelled
+          document.getElementById('customerModal').classList.add('active');
         }
       });
+    }
+
+    // Checkout with Flutterwave (legacy - now uses showCustomerForm)
+    function checkout() {
+      showCustomerForm();
     }
 
     // Save order to Google Apps Script
@@ -864,9 +1114,15 @@
 
     // Close modal when clicking outside
     window.onclick = function(event) {
-      const modal = document.getElementById('cartModal');
-      if (event.target === modal) {
+      const cartModal = document.getElementById('cartModal');
+      const customerModal = document.getElementById('customerModal');
+      
+      if (event.target === cartModal) {
         closeCart();
+      }
+      
+      if (event.target === customerModal) {
+        closeCustomerForm();
       }
     }
 
