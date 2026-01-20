@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Storybook Haven - Children's Storybooks</title>
+  <title>Kids O'Day Store - Educational Resources</title>
   
   <!-- Flutterwave -->
   <script src="https://checkout.flutterwave.com/v3.js"></script>
@@ -515,8 +515,6 @@
     <div class="container">
       <div class="header-content">
         <div class="logo">
-          <span class="logo-icon">📚</span>
-          <span>Storybook Haven</span>
         </div>
         <button class="cart-btn" onclick="openCart()">
           🛒 Cart
@@ -529,15 +527,15 @@
   <!-- Hero Section -->
   <section class="hero">
     <div class="container">
-      <h1>Magical Stories for Young Readers</h1>
-      <p>Discover enchanting tales that spark imagination and inspire wonder</p>
+      <h1>Empowering Young Minds Through Learning</h1>
+      <p>Quality educational resources and courses for children</p>
     </div>
   </section>
 
   <!-- Products Section -->
   <section class="products-section">
     <div class="container">
-      <h2 class="section-title">Featured Storybooks</h2>
+      <h2 class="section-title">Featured Educational Products</h2>
       <div class="products-grid" id="productsGrid">
         <!-- Products will be loaded here by JavaScript -->
       </div>
@@ -573,8 +571,8 @@
   <!-- Footer -->
   <footer>
     <div class="container">
-      <p>&copy; 2024 Storybook Haven. All rights reserved.</p>
-      <p>Bringing magical stories to children everywhere 🌟</p>
+      <p>&copy; 2024 Kids O'Day. All rights reserved.</p>
+      <p>Empowering young minds, one lesson at a time 🌟</p>
     </div>
   </footer>
 
@@ -634,7 +632,7 @@
 
     // Load cart from localStorage
     function loadCart() {
-      const savedCart = localStorage.getItem('storybookCart');
+      const savedCart = localStorage.getItem('kidsodayCart');
       if (savedCart) {
         cart = JSON.parse(savedCart);
         updateCartCount();
@@ -643,7 +641,7 @@
 
     // Save cart to localStorage
     function saveCart() {
-      localStorage.setItem('storybookCart', JSON.stringify(cart));
+      localStorage.setItem('kidsodayCart', JSON.stringify(cart));
       updateCartCount();
     }
 
@@ -725,7 +723,7 @@
           <div class="empty-cart">
             <div class="empty-cart-icon">🛒</div>
             <h3>Your cart is empty</h3>
-            <p>Add some magical storybooks to get started!</p>
+            <p>Add some educational resources to get started!</p>
           </div>
         `;
         cartSummary.style.display = 'none';
@@ -806,7 +804,7 @@
       // Initialize Flutterwave
       FlutterwaveCheckout({
         public_key: FLUTTERWAVE_PUBLIC_KEY,
-        tx_ref: "STORYBOOK_" + Date.now(),
+        tx_ref: "KIDSODAY_" + Date.now(),
         amount: total,
         currency: "USD",
         payment_options: "card,mobilemoney,ussd",
@@ -823,9 +821,9 @@
           })))
         },
         customizations: {
-          title: "Storybook Haven",
-          description: "Purchase of Children's Storybooks",
-          logo: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=100&h=100&fit=crop"
+          title: "Kids O'Day",
+          description: "Purchase of Educational Resources",
+          logo: "https://www.kidsoday.com/logo.png"
         },
         callback: function(data) {
           console.log("Payment successful:", data);
